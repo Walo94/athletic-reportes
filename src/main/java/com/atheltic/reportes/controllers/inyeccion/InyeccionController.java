@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -22,6 +23,15 @@ import net.sf.jasperreports.engine.JasperPrint;
 @RestController
 @RequestMapping("/reportes-api/inyeccion")
 public class InyeccionController {
+
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
+
+    @Value("${spring.datasource.username}")
+    private String dbUsername;
+
+    @Value("${spring.datasource.password}")
+    private String dbPassword;
 
     @GetMapping("/avance-dia")
     public ResponseEntity<byte[]> reporteDiario(@RequestParam(required = false) String dia) throws Exception {
@@ -38,14 +48,14 @@ public class InyeccionController {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
             // URL con configuración de seguridad directamente en la cadena
-            String url = "jdbc:sqlserver://192.168.95.1\\DATOS65;" +
+           /*  String url = "jdbc:sqlserver://192.168.95.1\\DATOS65;" +
                     "databaseName=Avances;" +
                     "encrypt=false;" +
                     "trustServerCertificate=true;" +
                     "integratedSecurity=false;" +
-                    "loginTimeout=30";
+                    "loginTimeout=30";*/
 
-            Connection conn = DriverManager.getConnection(url, "sa", "Prok2001");
+            Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
 
             // Llenar el reporte con la conexión
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporteStream, parametros, conn);
@@ -83,15 +93,7 @@ public class InyeccionController {
             parametros.put("year", year);
             parametros.put("semana", weekNum);
 
-            // URL con configuración de seguridad directamente en la cadena
-            String url = "jdbc:sqlserver://192.168.95.1\\DATOS65;" +
-                    "databaseName=Avances;" +
-                    "encrypt=false;" +
-                    "trustServerCertificate=true;" +
-                    "integratedSecurity=false;" +
-                    "loginTimeout=30";
-
-            Connection conn = DriverManager.getConnection(url, "sa", "Prok2001");
+            Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
 
             // Llenar el reporte con la conexión
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporteStream, parametros, conn);
@@ -120,15 +122,7 @@ public class InyeccionController {
             InputStream reporteStream = new ClassPathResource("reportes/inyeccion/Inventario.jasper").getInputStream();
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
-            // URL con configuración de seguridad directamente en la cadena
-            String url = "jdbc:sqlserver://192.168.95.1\\DATOS65;" +
-                    "databaseName=Avances;" +
-                    "encrypt=false;" +
-                    "trustServerCertificate=true;" +
-                    "integratedSecurity=false;" +
-                    "loginTimeout=30";
-
-            Connection conn = DriverManager.getConnection(url, "sa", "Prok2001");
+            Connection conn = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporteStream, null, conn);
             conn.close();
 
