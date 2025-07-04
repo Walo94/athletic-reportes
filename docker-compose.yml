@@ -4,6 +4,8 @@ services:
     ports:
       - "5173:80"
     restart: always
+    networks:
+      - app-network
 
   backend:
     image: ozgamez/athletic-erp-backend:latest
@@ -18,6 +20,8 @@ services:
       - servidor-reportes
     volumes:
       - /d/ERP/dbf:/app/data
+    networks:
+      - app-network
 
   servidor-reportes:
     image: ozgamez/athletic-reportes:latest
@@ -31,3 +35,9 @@ services:
       - CORS_ORIGIN=http://localhost:5173
     volumes:
       - /d/ERP/assets:/app/assets
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
