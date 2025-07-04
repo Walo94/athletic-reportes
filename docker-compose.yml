@@ -5,14 +5,15 @@ services:
       - "5173:80"
     restart: always
     networks:
-      - app-network
+      - erp-net # ✅ Se une a la red compartida
 
   backend:
     image: ozgamez/athletic-erp-backend:latest
     ports:
       - "5000:5000"
     environment:
-      - REPORT_API_URL=http://servidor-reportes:8081
+      # ✅ CORRECCIÓN: El puerto interno es 8080
+      - REPORT_API_URL=http://servidor-reportes:8080
       - PORT=5000
       - DATA_FILES_PATH=/app/data
     restart: always
@@ -21,12 +22,13 @@ services:
     volumes:
       - /d/ERP/dbf:/app/data
     networks:
-      - app-network
+      - erp-net # ✅ Se une a la red compartida
 
   servidor-reportes:
     image: ozgamez/athletic-reportes:latest
+    # ✅ CORRECCIÓN: Puerto externo 8081 -> puerto interno 8080
     ports:
-      - "8081:8081"
+      - "8081:8080"
     restart: always
     environment:
       - DB_URL=jdbc:sqlserver://192.168.95.1:9205;databaseName=Avances;encrypt=false;trustServerCertificate=true
@@ -36,8 +38,9 @@ services:
     volumes:
       - /d/ERP/assets:/app/assets
     networks:
-      - app-network
+      - erp-net # ✅ Se une a la red compartida
 
+# ✅ CORRECCIÓN: Le decimos a Compose que use la red que creamos
 networks:
-  app-network:
-    driver: bridge
+  erp-net:
+    external: true
