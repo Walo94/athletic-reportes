@@ -13,7 +13,7 @@ services:
       - "5000:5000"
     environment:
       # Así Node sabe cómo llamar a la API de reportes
-      - REPORT_API_URL=http://servidor-reportes:8080 
+      - REPORT_API_URL=http://servidor-reportes:8080
       # El puerto en el que corre el contenedor de Node
       - PORT=5000
       - DATA_FILES_PATH=/app/data
@@ -21,7 +21,7 @@ services:
     depends_on:
       - servidor-reportes # Le dice a Docker que inicie el servicio de reportes primero
     volumes:
-      - /d/ERP/data-files:/app/data
+      - /d/ERP/dbf:/app/data
 
   # Servicio de Reportes (Spring Boot)
   servidor-reportes:
