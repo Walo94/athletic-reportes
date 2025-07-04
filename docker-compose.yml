@@ -21,7 +21,7 @@ services:
     depends_on:
       - servidor-reportes # Le dice a Docker que inicie el servicio de reportes primero
     volumes:
-      - ./dbf:/app/data
+      - /d/ERP/data-files:/app/data
 
   # Servicio de Reportes (Spring Boot)
   servidor-reportes:
@@ -38,4 +38,4 @@ services:
       - CORS_ORIGIN=http://localhost:5173
       # Mapea la carpeta 'assets' de tu PC a la carpeta '/app/assets' dentro del contenedor
     volumes:
-      - ./assets:/app/assets
+      - /d/ERP/assets:/app/assets
