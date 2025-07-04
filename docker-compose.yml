@@ -4,16 +4,12 @@ services:
     ports:
       - "5173:80"
     restart: always
-    # ✅ AÑADIDO: Conecta este servicio a nuestra red personalizada
-    networks:
-      - erp-net
 
   backend:
     image: ozgamez/athletic-erp-backend:latest
     ports:
       - "5000:5000"
     environment:
-      - REPORT_API_URL=http://servidor-reportes:8080
       - PORT=5000
       - DATA_FILES_PATH=/app/data
     restart: always
@@ -21,9 +17,6 @@ services:
       - servidor-reportes
     volumes:
       - /d/ERP/dbf:/app/data
-    # ✅ AÑADIDO: Conecta este servicio a nuestra red personalizada
-    networks:
-      - erp-net
 
   servidor-reportes:
     image: ozgamez/athletic-reportes:latest
@@ -37,11 +30,3 @@ services:
       - CORS_ORIGIN=http://localhost:5173
     volumes:
       - /d/ERP/assets:/app/assets
-    # ✅ AÑADIDO: Conecta este servicio a nuestra red personalizada
-    networks:
-      - erp-net
-
-# ✅ AÑADIDO: Define la red personalizada al final del archivo
-networks:
-  erp-net:
-    driver: bridge
