@@ -1,0 +1,41 @@
+services:
+  # Servicio Frontend (React)
+  frontend:
+    image: ozgamez/athletic-erp-frontend:latest
+    ports:
+      - "5173:80" # Accedes en tu navegador a http://localhost:5173
+    restart: always
+
+  # Servicio Backend (Node.js)
+  backend:
+    image: ozgamez/athletic-erp-backend:latest
+    ports:
+      - "5000:5000"
+    environment:
+      # Así Node sabe cómo llamar a la API de reportes
+      - REPORT_API_URL=http://servidor-reportes:8080 
+      # El puerto en el que corre el contenedor de Node
+      - PORT=5000
+      - DATA_FILES_PATH=/app/data
+    restart: always
+    depends_on:
+      - servidor-reportes # Le dice a Docker que inicie el servicio de reportes primero
+    volumes:
+      - ./dbf:/app/data
+
+  # Servicio de Reportes (Spring Boot)
+  servidor-reportes:
+    image: ozgamez/athletic-reportes:latest
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      # ¡AQUÍ INYECTAMOS LA CONFIGURACIÓN DE LA BD!
+      # Reemplaza los valores con los de tu servidor SQL Server real
+      - DB_URL=jdbc:sqlserver://192.168.95.1:9205;databaseName=Avances;encrypt=false;trustServerCertificate=true
+      - DB_USER=sa
+      - DB_PASS=Prok2001
+      - CORS_ORIGIN=http://localhost:5173
+      # Mapea la carpeta 'assets' de tu PC a la carpeta '/app/assets' dentro del contenedor
+    volumes:
+      - ./assets:/app/assets
